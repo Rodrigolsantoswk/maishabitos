@@ -1,39 +1,64 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { router, Stack } from 'expo-router'
+import { AuthProvider, useAuth } from '@/src/contexts/AuthContext'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/src/lib/supabase'
+import UserProvider from '@/src/state/user'
+import { User } from '@/src/model/user'
+import { getUserById } from '@/src/services/userService'
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  return (
+    <AuthProvider>
+      <UserProvider>
+        <MainLayout />
+      </UserProvider>
+    </AuthProvider>
+  )
+}
+
+function MainLayout() {
+  const { setAuth } = useAuth()
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        if (session) {
+          const supabaseUser = session.user
+          setAuth(supabaseUser)
+          try {
+            const user: User = await getUserById(supabaseUser.id)
+            console.log(user)
 
-  if (!loaded) {
-    return null;
-  }
+            if (user.isfirstlogin) {
+              console.log("isfirstlogin:", user.isfirstlogin)
+              router.replace('/(panel)/welcome/welcomepg')
+            } else {
+              console.log("profile.page :\\")
+              router.replace('/(panel)/profile/profilepg')
+            }
+          } catch (error) {
+            console.error('Erro ao buscar ou atualizar usuário:', error)
+          } 
+          return
+        }
+
+        setAuth(null)
+        router.replace('/(auth)/signin/page')
+      }
+    )
+
+    return () => {
+      authListener.subscription.unsubscribe()
+    }
+  }, [])
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)/signup/page" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)/signin/page" options={{ headerShown: false }} />
+      <Stack.Screen name="(panel)/profile/profilepg" options={{ headerShown: false }} />
+      <Stack.Screen name="(panel)/welcome/welcomepg" options={{ headerShown: false }} />
+    </Stack>
+  )
 }
