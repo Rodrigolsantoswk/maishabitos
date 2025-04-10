@@ -28,7 +28,6 @@ function MainLayout() {
           try {
             const user: User = await getUserById(supabaseUser.id)
             console.log(user)
-
             if (user.isfirstlogin) {
               console.log("isfirstlogin:", user.isfirstlogin)
               router.replace('/(panel)/welcome/welcomepg')

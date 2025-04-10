@@ -47,8 +47,6 @@ export function Login() {
         }
 
         setLoading(false);
-        router.replace('/(panel)/profile/page');
-
     }
 
     return (

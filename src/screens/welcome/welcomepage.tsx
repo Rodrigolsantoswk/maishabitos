@@ -26,7 +26,7 @@ export function Welcome() {
     } ;
     updateFirstLogin(user.id)
       .then(() => {
-        router.replace('/(panel)/profile/page');
+        router.replace('/(panel)/profile/profilepg');
       })
       .catch(console.error);
   }
