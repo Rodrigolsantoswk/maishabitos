@@ -10,13 +10,15 @@ import {
     SafeAreaView
 }
     from "react-native";
-import { Link, router } from 'expo-router'
+import { Link } from 'expo-router'
 import { useState } from "react";
 import { supabase } from "@/src/lib/supabase";
-import { ThemedLogo } from "@/components/ThemedLogo";
-import { ImageViewer } from "@/components/ImageViewer"
-import { CirclesDecoration } from "@/components/CirclesDecoration";
-import { ThemedButton } from "@/components/ThemedButton";
+import { ContentViewer, 
+    ThemedLogo, 
+    ThemedButton, 
+    CirclesDecoration,
+    ImageViewer
+}from '@/components'
 
 const PlaceholderImage = require("@/assets/images/logo.webp");
 
@@ -62,7 +64,11 @@ export function Login() {
                                 <ImageViewer imgSource={PlaceholderImage} widthPercent={55} />
                             </View>
                         </View>
-                        <View style={styles.form}>
+                        <ContentViewer
+                            backgroundColor={colors.white}
+                            paddingTop={34}
+                            paddingHorizontal={18}
+                            gap={18}>
                             <View>
                                 <Text>Email</Text>
                                 <TextInput
@@ -90,7 +96,7 @@ export function Login() {
                             <Link href={'/(auth)/signup/page'} style={styles.link}>
                                 <Text>Ainda não possui uma conta? Cadastre-se</Text>
                             </Link>
-                        </View>
+                        </ContentViewer>
                     </View>
                 </ScrollView>
             </View>
@@ -116,15 +122,6 @@ const styles = StyleSheet.create({
         fontSize: 34,
         color: colors.white,
         marginBottom: 34,
-    },
-    form: {
-        flex: 1,
-        backgroundColor: colors.white,
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-        paddingTop: 34,
-        paddingLeft: 14,
-        paddingRight: 14,
     },
     label: {
         color: colors.zinc,

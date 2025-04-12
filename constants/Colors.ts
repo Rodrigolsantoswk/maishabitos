@@ -23,5 +23,6 @@ export default {
   gray: "#dddddd",
   blue: "#2F71A8",
   sky: "#47ACD7",
-  purple: "#8B7FD9"
+  purple: "#8B7FD9",
+  transparent: "transparent"
 };

@@ -36,6 +36,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 8,
     marginVertical: 8,
+    paddingRight: 8,
+    paddingLeft: 8
   },
   buttonText: {
     color: colors.white,

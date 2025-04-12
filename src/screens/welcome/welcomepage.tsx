@@ -10,10 +10,14 @@ import {
   Alert
 } from "react-native"
 import { router } from "expo-router"
-import { ThemedLogo } from "@/components/ThemedLogo"
-import { ThemedButton } from "@/components/ThemedButton"
-import { CirclesDecoration } from "@/components/CirclesDecoration"
+import { ContentViewer, 
+  ThemedLogo, 
+  ThemedButton, 
+  CirclesDecoration 
+}from '@/components'
 import { updateFirstLogin } from "@/src/services/userService"
+
+
 
 export function Welcome() {
   const { user } = useAuth()
@@ -36,7 +40,7 @@ export function Welcome() {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="light-content" backgroundColor={colors.blue} />
       <View style={{ flex: 1 }}>
-        <ScrollView style={{ flex: 1, backgroundColor: colors.white }}>
+        <ScrollView style={{ flex: 1, backgroundColor: colors.blue }}>
           <View style={styles.container}>
             <View style={styles.header}>
               <CirclesDecoration />
@@ -44,12 +48,17 @@ export function Welcome() {
                 <ThemedLogo fontSize={56} />
               </View>
             </View>
-            <View style={styles.content}>
+            <ContentViewer
+                backgroundColor={colors.transparent}
+                paddingTop={34}
+                paddingHorizontal={18}
+                gap={18}
+              >
               <Text style={styles.title}>Bem-vindo(a)!</Text>
               <Text style={styles.text}>
                 No aplicativo +Hábitos, você pode controlar todas as suas rotinas diárias, ficando por dentro de como está evoluindo em relação aos seus objetivos.{"\n\n"}
                 Com ele, você consegue:{"\n\n"}
-                • Definir e personalizar hábitos diários, semanais ou mensais, com lembretes automáticos para não esquecer de nada importante.{"\n\n"}
+                • Definir e personalizar hábitos diários com lembretes automáticos para não esquecer de nada importante.{"\n\n"}
                 • Acompanhar seu progresso de maneira visual com gráficos e estatísticas detalhadas, ajudando você a ver o quanto está avançando.{"\n\n"}
                 • Criar hábitos saudáveis e melhorar sua produtividade, equilibrando sua rotina de forma mais eficaz e sem estresse.{"\n\n"}
                 O +Hábitos é o seu parceiro ideal para tornar seus objetivos mais tangíveis e acompanhar cada passo do seu crescimento pessoal.
@@ -58,7 +67,7 @@ export function Welcome() {
                 title="Continuar"
                 onPress={handleContinue}
               />
-            </View>
+            </ContentViewer>
           </View>
         </ScrollView>
       </View>
@@ -93,12 +102,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: colors.zinc,
+    color: colors.white,
     textAlign: 'center',
   },
   text: {
     fontSize: 16,
-    color: colors.zinc,
+    color: colors.white,
     lineHeight: 24,
     textAlign: 'left',
   },

@@ -1,0 +1,1 @@
+export { CreateHabit as default } from "./createnewhabitpage"
