@@ -19,11 +19,11 @@ const emptyUser: TUserAttr = {
 export class User implements TUserAttr {
   private _data: TUserAttr = { ...emptyUser }
 
-  constructor(email?: string, name?: string) {
+  constructor(id?: string, email?: string, name?: string, created_at?: Date, isfirstlogin?: boolean) {
     this._data.id = Crypto.randomUUID()
     this._data.email = email || ''
     this._data.name = name || ''
-    this._data.created_at = new Date()
+    this._data.created_at = created_at || new Date() || null
     this._data.isfirstlogin = true
   }
 
@@ -55,6 +55,7 @@ export class User implements TUserAttr {
   get isfirstlogin() {
     return this._data.isfirstlogin
   }
+
   set isfirstlogin(value: boolean) {
     this._data.isfirstlogin = value
   }

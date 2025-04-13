@@ -1,4 +1,5 @@
 import { User } from "../user";
+import * as Crypto from 'expo-crypto'
 
 export interface THabito {
   id: string;
@@ -16,7 +17,7 @@ export class Habito implements THabito {
   private _data: THabito = { ...emptyHabito }
 
   constructor(nome: string, user: User) {
-    this._data.id = crypto.randomUUID();
+    this._data.id = Crypto.randomUUID();
     this._data.nome_do_habito = nome;
     this._data.user = user;
   }

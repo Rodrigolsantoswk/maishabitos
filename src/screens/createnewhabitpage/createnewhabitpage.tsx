@@ -20,8 +20,15 @@ import {
     ThemedButton
 } from "@/components";
 import { useEffect, useState } from "react";
+import { Habito } from "@/src/model/habit";
+import { useAuth } from "@/src/state/auth/ctx";
+import { User } from "@/src/model/user";
+import { getUserById } from "@/src/services/userService";
+import { HabitoRotina } from "@/src/model/habitRoutine";
 
 export function CreateHabit() {
+    const { setAuth, user } = useAuth();
+
     const [nome, setNome] = useState("");
     const [horarios, setHorarios] = useState<string[]>([]);
     const [dias, setDias] = useState<Dia[]>([]);
@@ -42,18 +49,45 @@ export function CreateHabit() {
 
     function toggleDia(dia: string) {
         setDiasSelecionados(prev =>
-            prev.includes(dia)
-                ? prev.filter(d => d !== dia)
-                : [...prev, dia]
+            prev.includes(dia) ? prev.filter(d => d !== dia) : [...prev, dia]
         );
     }
 
-    function handleConfirm(date: Date) {
+    function removerHorario(index: number) {
+        setHorarios(prev => prev.filter((_, i) => i !== index));
+    }
+
+    function handleConfirmDate(date: Date) {
         const hora = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         if (!horarios.includes(hora)) {
             setHorarios([...horarios, hora]);
         }
         setIsPickerVisible(false);
+    }
+
+    const handleSaveHabit = async () => {
+        console.log({ nome, diasSelecionados, horarios });
+        if (nome != "" && diasSelecionados.length > 0 && horarios.length > 0) {
+            if (!user) {
+                Alert.alert("Problema com o usuário, contacte o administrador.");
+                return;
+            }
+            const usuario = await getUserById(user.id);
+            const habito = new Habito(nome, new User(usuario.id, usuario.email, usuario.name, usuario.created_at ?? undefined, usuario.isfirstlogin));
+            for (const dia of diasSelecionados) {
+                for (const horario of horarios) {
+                    const habitoRotina = new HabitoRotina(habito, dias.find(d => d.nome_dia === dia)!, horario);
+
+                }
+            }
+            console.log("Hábito criado com sucesso!");
+            // Redefine os campos
+            setNome("");
+            setDiasSelecionados([]);
+            setHorarios([]);
+        } else {
+            Alert.alert("Por favor, preencha todos os campos.");
+        }
     }
 
     return (
@@ -112,22 +146,29 @@ export function CreateHabit() {
                             <DateTimePickerModal
                                 isVisible={isPickerVisible}
                                 mode="time"
-                                onConfirm={handleConfirm}
+                                onConfirm={handleConfirmDate}
                                 onCancel={() => setIsPickerVisible(false)}
                             />
 
                             <View style={{ marginTop: 10 }}>
                                 {horarios.map((h, index) => (
-                                    <Text key={index} style={{ fontSize: 16 }}>
-                                        - {h}
-                                    </Text>
+                                    <View key={index} style={styles.itensListaDeHoras}>
+                                        <Text style={{ fontSize: 16, flex: 1, marginLeft: 15 }}>
+                                            {h}
+                                        </Text>
+                                        <TouchableOpacity onPress={() => removerHorario(index)} style={{ padding: 4 }}>
+                                            <Text style={{ color: colors.blue, fontSize: 16 }}>
+                                                Remover
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 ))}
                             </View>
 
                             <ThemedButton
                                 title="Salvar hábito"
                                 onPress={() => {
-                                    console.log({ nome, diasSelecionados, horarios });
+                                    handleSaveHabit();
                                 }}
                             />
                         </View>
@@ -167,8 +208,19 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         borderTopLeftRadius: 16,
         borderTopRightRadius: 16,
-        paddingTop: 34,
+        paddingTop: 15,
         paddingHorizontal: 18,
-        gap: 18,
+        gap: 15,
     },
+    listaDeHoras: {
+
+    },
+    itensListaDeHoras: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 4,
+        backgroundColor: colors.gray,
+        borderRadius: 8,
+        padding: 4
+    }
 })

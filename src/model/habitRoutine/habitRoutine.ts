@@ -1,6 +1,7 @@
 import { Dia } from '../days/days';
 import { Habito } from '../habit/habit';
 import { User } from '../user';
+import * as Crypto from 'expo-crypto'
 
 export interface THabitoRotinaAttr {
     habito_rotina_id: string;
@@ -20,7 +21,7 @@ export class HabitoRotina implements THabitoRotinaAttr {
     private _data: THabitoRotinaAttr = { ...emptyUserRoutine }
 
     constructor(habito: Habito, dia: Dia, horario: string) {
-        this._data.habito_rotina_id = crypto.randomUUID();
+        this._data.habito_rotina_id = Crypto.randomUUID();
         this._data.habito = habito;
         this._data.dia = dia;
         this._data.horario = horario;
@@ -34,49 +35,49 @@ export class HabitoRotina implements THabitoRotinaAttr {
         this._data.habito_rotina_id = value
     }
 
-    get habito (){
+    get habito() {
         return this._data.habito
     }
 
-    set habito (value: Habito){
+    set habito(value: Habito) {
         this._data.habito = value
     }
 
-    get dia (){
+    get dia() {
         return this._data.dia
     }
 
-    set dia (value: Dia){
+    set dia(value: Dia) {
         this._data.dia = value
     }
 
-    get horario (){
+    get horario() {
         return this._data.horario
     }
 
-    set horario (value: string){
+    set horario(value: string) {
         this._data.horario = value
     }
 
-    get data(): THabitoRotinaAttr{
+    get data(): THabitoRotinaAttr {
         return this._data
     }
 
-    get dataCpy(): THabitoRotinaAttr{
+    get dataCpy(): THabitoRotinaAttr {
         return { ...this.data }
     }
 
     toDB(): {
         habito_rotina_id: string;
         id_habito: string;
-        id_dia: string;
-        id_horario: string;
+        nome_dia: string;
+        horario: string;
     } {
         return {
             habito_rotina_id: this._data.habito_rotina_id,
             id_habito: this._data.habito.id,
-            id_dia: this._data.dia.nome_dia,
-            id_horario: this._data.horario,
+            nome_dia: this._data.dia.nome_dia,
+            horario: this._data.horario,
         };
     }
 }
