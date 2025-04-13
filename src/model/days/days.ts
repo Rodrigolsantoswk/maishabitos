@@ -1,4 +1,4 @@
-export type TDiaAttr = {
+export interface TDiaAttr {
   nome_dia: string;
 };
 

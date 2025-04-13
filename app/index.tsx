@@ -1,4 +1,4 @@
-import LoadingPage from "@/src/screens/loadingPage";
+import LoadingPage from "@/src/screens/loadingpage";
 
 
 export default function Index() {

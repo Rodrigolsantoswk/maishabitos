@@ -1,5 +1,5 @@
 import colors from "@/constants/colors"
-import { useAuth } from "@/src/contexts/AuthContext"
+import { useAuth } from "@/src/state/auth/ctx"
 import {
   Text,
   View,

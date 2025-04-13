@@ -1,5 +1,6 @@
 import { Dia } from '../days/days';
 import { Habito } from '../habit/habit';
+import { User } from '../user';
 
 export interface THabitoRotinaAttr {
     habito_rotina_id: string;
@@ -10,7 +11,7 @@ export interface THabitoRotinaAttr {
 
 const emptyUserRoutine: THabitoRotinaAttr = {
     habito_rotina_id: '',
-    habito: new Habito('', ''),
+    habito: new Habito('', new User('')),
     dia: new Dia(''),
     horario: ''
 }
