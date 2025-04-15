@@ -1,5 +1,5 @@
 import { supabase } from "@/src/lib/supabase";
-import { Dia } from "../model/days/days";
+import { Dia, TDiaAttr } from "../model/days/days";
 
 export async function getDiasDaSemana(): Promise<Dia[]> {
   const { data, error } = await supabase
@@ -8,5 +8,5 @@ export async function getDiasDaSemana(): Promise<Dia[]> {
 
   if (error) throw error;
 
-  return data.map((dia: any) => new Dia(dia.nome_dia));
+  return (data as TDiaAttr[]).map(dia => new Dia(dia.nome_dia));
 }

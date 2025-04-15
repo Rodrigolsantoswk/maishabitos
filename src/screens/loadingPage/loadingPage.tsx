@@ -1,5 +1,5 @@
 import colors from "@/constants/colors";
-import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 
 export function LoadingPage(){
 
@@ -7,8 +7,9 @@ export function LoadingPage(){
         <View style={styles.container}>
            <ActivityIndicator
             size={44}
-            color={colors.green}
+            color={colors.purple}
            />
+           <Text style={styles.loadingText}>Carregando... Aguarde um pouquinho!!</Text>
         </View>
     )
 }
@@ -17,6 +18,15 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         paddingTop: 34,
-        backgroundColor: colors.zinc,
+        backgroundColor: colors.sky,
+        justifyContent: 'center',
+        alignContent: 'center'
     },
+    loadingText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: colors.white,
+        textAlign: 'center',
+        marginTop: 16
+    }
 })

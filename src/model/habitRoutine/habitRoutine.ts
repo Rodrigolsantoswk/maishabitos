@@ -12,7 +12,7 @@ export interface THabitoRotinaAttr {
 
 const emptyUserRoutine: THabitoRotinaAttr = {
     habito_rotina_id: '',
-    habito: new Habito('', new User('')),
+    habito: new Habito('', '', new User()),
     dia: new Dia(''),
     horario: ''
 }
@@ -20,11 +20,11 @@ const emptyUserRoutine: THabitoRotinaAttr = {
 export class HabitoRotina implements THabitoRotinaAttr {
     private _data: THabitoRotinaAttr = { ...emptyUserRoutine }
 
-    constructor(habito: Habito, dia: Dia, horario: string) {
-        this._data.habito_rotina_id = Crypto.randomUUID();
-        this._data.habito = habito;
-        this._data.dia = dia;
-        this._data.horario = horario;
+    constructor(habito_rotina_id?: string, habito?: Habito, dia?: Dia, horario?: string) {
+        this._data.habito_rotina_id = habito_rotina_id ?? Crypto.randomUUID();
+        this._data.habito = habito || new Habito();
+        this._data.dia = dia || new Dia('');
+        this._data.horario = horario || '';
     }
 
     get habito_rotina_id() {

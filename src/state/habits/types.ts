@@ -3,24 +3,33 @@ import { THabitoRotinaAttr } from "@/src/model/habitRoutine";
 
 export enum HabitoRotinaActionTypes {
     ADD_HABITROUTINE = "ADD_HABITROUTINE",
-    DELETE_HABITROUTINE = "DELETE_HABITROUTINE"
+    DELETE_HABITROUTINE = "DELETE_HABITROUTINE",
+    SET_ALL_HABITROUTINES = "SET_ALL_HABITROUTINES"
 }
 
-type AddHabitRoutineAction ={
+type AddHabitRoutineAction = {
     type: HabitoRotinaActionTypes.ADD_HABITROUTINE;
-    payload: THabitoRotinaAttr
-}
+    payload: THabitoRotinaAttr;
+};
 
-type DeleteHabitRoutineAction ={
+type DeleteHabitRoutineAction = {
     type: HabitoRotinaActionTypes.DELETE_HABITROUTINE;
-    payload: null
-}
+    payload: string;
+};
 
-export type THabitRoutineActions = AddHabitRoutineAction | DeleteHabitRoutineAction;
+type SetAllHabitRoutinesAction = {
+    type: HabitoRotinaActionTypes.SET_ALL_HABITROUTINES;
+    payload: THabitoRotinaAttr[];
+};
 
-export type TStateHabitRoutine ={
-    HabitRoutine: THabitoRotinaAttr | null;
-}
+export type THabitRoutineActions =
+    | AddHabitRoutineAction
+    | DeleteHabitRoutineAction
+    | SetAllHabitRoutinesAction;
+
+export type TStateHabitRoutine = {
+    habitRoutines: THabitoRotinaAttr[];
+};
 
 export type THabitRoutineDispatch = {
     state: TStateHabitRoutine;

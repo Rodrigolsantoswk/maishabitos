@@ -16,10 +16,10 @@ const emptyHabito: THabito = {
 export class Habito implements THabito {
   private _data: THabito = { ...emptyHabito }
 
-  constructor(nome: string, user: User) {
-    this._data.id = Crypto.randomUUID();
-    this._data.nome_do_habito = nome;
-    this._data.user = user;
+  constructor(id?: string, nome?: string, user?: User) {
+    this._data.id = id ??  Crypto.randomUUID();
+    this._data.nome_do_habito = nome || '';
+    this._data.user = user || new User();
   }
 
   get id () {

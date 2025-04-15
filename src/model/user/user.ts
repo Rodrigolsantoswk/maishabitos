@@ -20,7 +20,7 @@ export class User implements TUserAttr {
   private _data: TUserAttr = { ...emptyUser }
 
   constructor(id?: string, email?: string, name?: string, created_at?: Date, isfirstlogin?: boolean) {
-    this._data.id = Crypto.randomUUID()
+    this._data.id = id || Crypto.randomUUID()
     this._data.email = email || ''
     this._data.name = name || ''
     this._data.created_at = created_at || new Date() || null
