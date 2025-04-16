@@ -41,3 +41,31 @@ export async function getRotinasPorHabito(habitoId: string) {
         return { success: 0, message: error.message || "Erro inesperado ao buscar rotinas" };
     }
 }
+
+export async function getHabitosComRotinas(userId: string) {
+    try {
+        const { data, error } = await supabase
+            .from("habito_rotina")
+            .select(`
+            *,
+            habito (
+            *,
+            user_id
+            ),
+            dia: id_dia (
+            nome_dia
+            )
+        `)
+            .eq("habito.user_id", userId)
+
+
+        if (error) {
+            return { success: 0, message: error.message };
+        }
+
+        return { success: 1, data };
+    } catch (error: any) {
+        console.error("Erro ao buscar hábitos com rotinas:", error);
+        return { success: 0, message: error.message || "Erro inesperado" };
+    }
+}

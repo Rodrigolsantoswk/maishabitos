@@ -1,4 +1,4 @@
-import { Dia } from "@/src/model/days/days";
+import { Dia, TDiaAttr } from "@/src/model/days/days";
 
 export enum DiasActionTypes {
   SET_DIAS = "SET_DIAS",
@@ -6,13 +6,13 @@ export enum DiasActionTypes {
 
 type SetDiasAction = {
   type: DiasActionTypes.SET_DIAS;
-  payload: Dia[];
+  payload: TDiaAttr[];
 };
 
 export type DiasActions = SetDiasAction;
 
 export type DiasState = {
-  dias: Dia[];
+  dias: TDiaAttr[];
 };
 
 export type DiasDispatch = {

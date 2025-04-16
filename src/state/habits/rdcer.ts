@@ -24,7 +24,6 @@ export function reducer(
         habitRoutines: action.payload,
       };
 
-
     default:
       return state;
   }

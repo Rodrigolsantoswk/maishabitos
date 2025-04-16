@@ -28,31 +28,24 @@ import { HabitoRotina } from "@/src/model/habitRoutine";
 import { salvarHabitoRotina } from "@/src/services/habitoRotinaService";
 import { salvarHabito } from "@/src/services/habitoService";
 import LoadingPage from "../loadingpage";
-import { router } from "expo-router";
+import { HabitoRotinaActionTypes } from '@/src/state/habits/types';
+import { useContextHabitRoutine } from '@/src/state/habits/ctx';
+import { useDiasContext } from "@/src/state/days";
+
 
 export function CreateHabit() {
-    const { setAuth, user } = useAuth();
+    const { user } = useAuth();
 
     const [nome, setNome] = useState("");
     const [horarios, setHorarios] = useState<string[]>([]);
-    const [dias, setDias] = useState<Dia[]>([]);
     const [diasSelecionados, setDiasSelecionados] = useState<string[]>([]);
     const [isPickerVisible, setIsPickerVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [habitSaved, setHabitSaved] = useState(false);
-
-    useEffect(() => {
-        async function fetchDias() {
-            try {
-                const data = await getDiasDaSemana();
-                setDias(data);
-            } catch (error) {
-                console.error("Erro ao buscar dias:", error);
-            }
-        }
-        fetchDias();
-    }, []);
-
+    const { state: diasState } = useDiasContext();
+    const dias = diasState.dias.map(dia => dia);
+    const { dispatch: dispatchHabitoRotina } = useContextHabitRoutine();
+    console.log(diasState.dias);
     function toggleDia(dia: string) {
         setDiasSelecionados(prev =>
             prev.includes(dia) ? prev.filter(d => d !== dia) : [...prev, dia]
@@ -108,7 +101,7 @@ export function CreateHabit() {
             const usuario = respostaUser.data;
             const habito = new Habito(undefined, nome, new User(usuario.id, usuario.email, usuario.name, usuario.created_at ?? undefined, usuario.isfirstlogin));
 
-            //Verifica se foi possível inserir no banco de dados, caso contrário retorna um erro.
+            // Verifica se foi possível inserir no banco de dados, caso contrário retorna um erro.
             const respostaHabito = await salvarHabito(habito);
             if (respostaHabito.success === 0) {
                 Alert.alert("Atenção", "Erro ao salvar hábito: " + respostaHabito.message, [{ text: "OK" }]);
@@ -117,13 +110,22 @@ export function CreateHabit() {
 
             for (const dia of diasSelecionados) {
                 for (const horario of horarios) {
-                    const habitoRotina = new HabitoRotina(undefined, habito, dias.find(d => d.nome_dia === dia)!, horario);
-                    //Verifica se foi possível inserir no banco de dados, caso contrário retorna um erro.              
+                    dias.find(d => d.nome_dia === dia);
+
+                    const diaSelecionado = dias.find(d => d.nome_dia === dia);
+                    const diaInstancia = new Dia(diaSelecionado!.nome_dia);
+                    const habitoRotina = new HabitoRotina(undefined, habito, diaInstancia, horario);
+                    // Verifica se foi possível inserir no banco de dados, caso contrário retorna um erro.              
                     const resposta = await salvarHabitoRotina(habitoRotina);
                     if (resposta.success === 0) {
                         Alert.alert("Atenção", "Erro ao salvar hábito rotina: " + resposta.message, [{ text: "OK" }]);
                         return;
                     }
+                    // Copiando os dados para o state global
+                    dispatchHabitoRotina({
+                        type: HabitoRotinaActionTypes.ADD_HABITROUTINE,
+                        payload: habitoRotina.dataCpy,
+                    });
                 }
             }
             Alert.alert("Hábito criado com sucesso!");
