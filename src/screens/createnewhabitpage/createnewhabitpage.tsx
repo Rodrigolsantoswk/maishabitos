@@ -45,7 +45,7 @@ export function CreateHabit() {
     const { state: diasState } = useDiasContext();
     const dias = diasState.dias.map(dia => dia);
     const { dispatch: dispatchHabitoRotina } = useContextHabitRoutine();
-    console.log(diasState.dias);
+
     function toggleDia(dia: string) {
         setDiasSelecionados(prev =>
             prev.includes(dia) ? prev.filter(d => d !== dia) : [...prev, dia]
@@ -58,7 +58,10 @@ export function CreateHabit() {
 
     function handleConfirmDate(date: Date) {
         const hora = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        if (!horarios.includes(hora)) {
+        if (horarios.length >= 5) {
+            Alert.alert("Atenção", "Limite de horários atingido (5).", [{ text: "OK" }]);
+        }
+        if (!horarios.includes(hora) && horarios.length < 5) {
             setHorarios([...horarios, hora]);
         }
         setIsPickerVisible(false);
@@ -108,26 +111,28 @@ export function CreateHabit() {
                 return;
             }
 
+            // Para cada dia e cada horário selecionado, cria uma nova instância de HabitoRotina e a insere no banco de dados.
+            const habitosParaInserir: HabitoRotina[] = [];
             for (const dia of diasSelecionados) {
+                const diaSelecionado = dias.find(d => d.nome_dia === dia);
+                const diaInstancia = new Dia(diaSelecionado!.nome_dia);
                 for (const horario of horarios) {
-                    dias.find(d => d.nome_dia === dia);
-
-                    const diaSelecionado = dias.find(d => d.nome_dia === dia);
-                    const diaInstancia = new Dia(diaSelecionado!.nome_dia);
                     const habitoRotina = new HabitoRotina(undefined, habito, diaInstancia, horario);
-                    // Verifica se foi possível inserir no banco de dados, caso contrário retorna um erro.              
-                    const resposta = await salvarHabitoRotina(habitoRotina);
-                    if (resposta.success === 0) {
-                        Alert.alert("Atenção", "Erro ao salvar hábito rotina: " + resposta.message, [{ text: "OK" }]);
-                        return;
-                    }
-                    // Copiando os dados para o state global
-                    dispatchHabitoRotina({
-                        type: HabitoRotinaActionTypes.ADD_HABITROUTINE,
-                        payload: habitoRotina.dataCpy,
-                    });
+                    habitosParaInserir.push(habitoRotina);
                 }
             }
+            const resposta = await salvarHabitoRotina(habitosParaInserir);
+
+            // Em caso de erro, não insere os dados no state global.
+            if (resposta.success === 0) {
+                Alert.alert("Atenção", "Erro ao salvar hábito rotina: " + resposta.message, [{ text: "OK" }]);
+                return;
+            }
+            dispatchHabitoRotina({
+                type: HabitoRotinaActionTypes.ADD_MULTIPLE_HABITROUTINES,
+                payload: habitosParaInserir.map(h => h.dataCpy),
+            });
+
             Alert.alert("Hábito criado com sucesso!");
             setNome("");
             setDiasSelecionados([]);

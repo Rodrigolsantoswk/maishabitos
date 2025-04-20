@@ -22,24 +22,6 @@ export async function salvarHabito(habito: Habito) {
     }
 }
 
-export async function getHabitosPorUsuario(usuarioId: string) {
-    try {
-        const { data, error } = await supabase
-            .from('habitos')
-            .select('*')
-            .eq('usuario_id', usuarioId);
-
-        if (error) {
-            return { success: 0, message: error.message };
-        }
-
-        return { success: 1, data };
-    } catch (error: any) {
-        console.error("Erro ao buscar hábitos:", error);
-        return { success: 0, message: error.message || "Erro inesperado ao buscar hábitos" };
-    }
-}
-
 export async function getHabitoById(habitoId: string) {
     try {
         const { data, error } = await supabase
@@ -52,7 +34,7 @@ export async function getHabitoById(habitoId: string) {
             return { success: 0, message: error.message };
         }
 
-        return { success: 1, data: data as Habito};
+        return { success: 1, data: data as Habito };
     } catch (error: any) {
         console.error("Erro ao buscar hábito por ID:", error);
         return { success: 0, message: error.message || "Erro inesperado ao buscar hábito" };

@@ -7,6 +7,7 @@ type ContentViewerProps = {
   paddingTop?: number
   paddingHorizontal?: number
   gap?: number
+  color?: string
 }
 
 export function ContentViewer({
@@ -16,20 +17,22 @@ export function ContentViewer({
   paddingHorizontal = 18,
   gap = 18
 }: ContentViewerProps) {
-  
+
   const dynamicStyle: ViewStyle = {
-    backgroundColor,
+    backgroundColor: backgroundColor,
     paddingTop,
     paddingHorizontal,
     rowGap: gap,
     flex: 1,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16
   }
 
-  return  <View style={[styles.base, dynamicStyle]}>
-            {children}
-          </View>
+  return <View style={[styles.base, dynamicStyle]}>
+    {children}
+  </View>
 }
 
 const styles = StyleSheet.create({

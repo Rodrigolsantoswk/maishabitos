@@ -24,6 +24,14 @@ export function reducer(
         habitRoutines: action.payload,
       };
 
+    case HabitoRotinaActionTypes.ADD_MULTIPLE_HABITROUTINES:
+      return {
+        ...state,
+        habitRoutines: [...state.habitRoutines, ...action.payload],
+      };
+
+
+
     default:
       return state;
   }

@@ -70,13 +70,13 @@ export class HabitoRotina implements THabitoRotinaAttr {
     toDB(): {
         habito_rotina_id: string;
         id_habito: string;
-        nome_dia: string;
+        id_dia: string;
         horario: string;
     } {
         return {
             habito_rotina_id: this._data.habito_rotina_id,
             id_habito: this._data.habito.id,
-            nome_dia: this._data.dia.nome_dia,
+            id_dia: this._data.dia.nome_dia,
             horario: this._data.horario,
         };
     }
