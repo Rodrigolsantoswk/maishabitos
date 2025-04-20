@@ -15,7 +15,7 @@ export function reducer(
     case HabitoRotinaActionTypes.DELETE_HABITROUTINE:
       return {
         ...state,
-        habitRoutines: state.habitRoutines.filter(hr => hr.habito_rotina_id !== action.payload),
+        habitRoutines: state.habitRoutines.filter(hr => hr.habito.id !== action.payload),
       };
 
     case HabitoRotinaActionTypes.SET_ALL_HABITROUTINES:

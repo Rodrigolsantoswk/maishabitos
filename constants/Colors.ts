@@ -24,5 +24,7 @@ export default {
   blue: "#2F71A8",
   sky: "#47ACD7",
   purple: "#8B7FD9",
-  transparent: "transparent"
+  transparent: "transparent",
+  red: "#FF0000",
+  overlayPurple: "rgba(156, 89, 198, 0.5)",
 };

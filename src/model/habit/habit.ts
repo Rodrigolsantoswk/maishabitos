@@ -7,7 +7,7 @@ export interface THabito {
   user: User;
 };
 
-const emptyHabito: THabito = {
+export const emptyHabito: THabito = {
   id: "",
   nome_do_habito: "",
   user: new User(),

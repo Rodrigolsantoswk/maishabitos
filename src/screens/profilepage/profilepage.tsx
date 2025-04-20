@@ -8,7 +8,8 @@ import {
   Alert,
   StatusBar,
   SafeAreaView,
-  FlatList
+  FlatList,
+  Pressable
 } from "react-native";
 import { router } from "expo-router";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,11 +17,16 @@ import {
   CirclesDecoration,
   ThemedButton,
   ThemedLogo,
-  ContentViewer
+  ContentViewer,
+  ModalScreen
 } from "@/components";
 import { useContextHabitRoutine } from "@/src/state/habits/ctx";
-import { useEffect, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useContextUser } from "@/src/state/user";
+import { Habito, THabito, emptyHabito } from "@/src/model/habit";
+import { User } from "@/src/model/user";
+import { deleteHabito } from "@/src/services/habitoService";
+import { HabitoRotinaActionTypes } from "@/src/state/habits";
 
 interface RotinasAgrupadas {
   idHabito: string;
@@ -32,12 +38,47 @@ interface RotinasAgrupadas {
 
 export function Profile() {
   const { setAuth, user } = useAuth();
-  const { state: habitState } = useContextHabitRoutine();
+  const { state: habitState, dispatch: habitosDispatch } = useContextHabitRoutine();
   const { state: userState } = useContextUser();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [habitToDelete, setHabitToDelete] = useState<Habito | null>(null);
 
-  console.log(userState);
+  console.log("habitState:", JSON.stringify(habitState, null, 2));
+  
+  function handleDeleteHabit(habit: RotinasAgrupadas) {
+    const user = new User(
+      userState.user?.id,
+      userState.user?.email,
+      userState.user?.name,
+      userState.user?.created_at ?? undefined,
+      userState.user?.isfirstlogin
+    );
+
+    const habito = new Habito(habit.idHabito, habit.nome_do_habito, user);
+
+    setHabitToDelete(habito);
+    setModalVisible(true);
+  }
+
+  async function confirmDeleteHabit() {
+    if (habitToDelete) {
+      console.log("Deletando hábito:", habitToDelete);
+      const result = await deleteHabito(habitToDelete);
+      if (result.success === 1) {
+        console.log("Hábito deletado com sucesso.");
+        habitosDispatch({
+          type: HabitoRotinaActionTypes.DELETE_HABITROUTINE,
+          payload: habitToDelete.id,
+        })
+      }
+      setModalVisible(false);
+      setHabitToDelete(null);
+    }
+  }
 
   const listadeHabitos: Record<string, RotinasAgrupadas> = {};
+  // Este método transforma esta estrutura: [{habito_rotina...: {habito},dia}, {habito_rotina: {habito},dia}] 
+  // Nisso: [{habito...: dias: [], horarios: []}]
   const habitosAgrupados = useMemo(() => {
     habitState.habitRoutines.forEach((rotina) => {
       const habitoId = rotina.habito.id;
@@ -120,7 +161,11 @@ export function Profile() {
           ))}
         </View>
         <View style={styles.botaoContainer}>
-          <ThemedButton title="Deletar" onPress={() => { }} />
+          <ThemedButton
+            title="Deletar"
+            onPress={() => handleDeleteHabit(item)}
+            icon="trash"
+          ></ThemedButton>
         </View>
       </View>
     </LinearGradient>
@@ -128,6 +173,28 @@ export function Profile() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <ModalScreen
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="Confirmar exclusão"
+        TextColor={colors.white}
+      >
+        <View style={{ padding: 20 }}>
+          <Text style={{ color: colors.white, fontSize: 16, marginBottom: 20 }}>
+            Deseja realmente deletar o hábito&nbsp;
+            <Text style={{ fontWeight: 'bold' }}>{habitToDelete?.nome_do_habito}</Text>?
+          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Pressable onPress={() => setModalVisible(false)} style={{ marginRight: 10 }}>
+              <Text style={{ color: colors.green, fontSize: 16 }}>Cancelar</Text>
+            </Pressable>
+            <Pressable onPress={confirmDeleteHabit}>
+              <Text style={{ color: colors.red, fontSize: 16, fontWeight: 'bold' }}>OK</Text>
+            </Pressable>
+          </View>
+        </View>
+      </ModalScreen>
+
       <StatusBar barStyle="light-content" backgroundColor={colors.blue} />
       <View style={styles.header}>
         <View style={styles.headerContent}>
@@ -175,19 +242,13 @@ export function Profile() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 0,
-    padding: 0,
-    paddingTop: 34,
-    backgroundColor: colors.blue,
-  },
+
   header: {
     paddingLeft: 14,
     paddingRight: 14,
     backgroundColor: colors.blue,
     borderBottomColor: colors.sky,
-    borderBottomWidth: 2
+    borderBottomWidth: 2,
   },
   headerContent: {
     alignItems: 'flex-end',
@@ -199,13 +260,13 @@ const styles = StyleSheet.create({
     fontSize: 34,
     color: colors.white,
     marginBottom: 34,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   nome: {
     fontSize: 16,
     color: colors.white,
     textAlign: 'center',
-    marginBottom: 24
+    marginBottom: 24,
   },
   habitContainer: {
     padding: 14,
@@ -239,7 +300,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     top: -1,
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
   horariosRow: {
     flexDirection: 'row',
@@ -260,4 +321,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
 });

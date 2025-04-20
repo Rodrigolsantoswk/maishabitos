@@ -40,3 +40,20 @@ export async function getHabitoById(habitoId: string) {
         return { success: 0, message: error.message || "Erro inesperado ao buscar hábito" };
     }
 }
+
+export async function deleteHabito(habito: Habito) {
+    try {
+        const { error } = await supabase
+            .from('habito')
+            .delete()
+            .eq('id', habito.id); 
+        if (error) {
+            return { success: 0, message: error.message };
+        }
+
+        return { success: 1 };
+    } catch (error: any) {
+        console.error("Erro ao deletar hábito:", error);
+        return { success: 0, message: error.message || "Erro inesperado ao deletar hábito" };
+    }
+}

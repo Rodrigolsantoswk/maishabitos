@@ -70,18 +70,19 @@ function MainLayout() {
               return
             }
 
-            const user: User = result.data
-
+            const userObj: User = result.data
+            userObj.email = session.user.email || ''
+            console.log('email', userObj.email);
             // Populando states
             await carregarDias()
-            await carregarHabitos(user.id)
+            await carregarHabitos(userObj.id)
 
             userDispatch({
               type: UserActionTypes.ADD_USER,
-              payload: user,
+              payload: userObj,
             })
 
-            if (user.isfirstlogin) {
+            if (userObj.isfirstlogin) {
               router.replace('/welcome/_welcomepg')
             } else {
               router.replace('/(panel)/profile/profilepg')

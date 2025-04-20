@@ -224,14 +224,12 @@ export function CreateHabit() {
                                             </View>
                                         ))}
                                     </View>
-
                                     <ThemedButton
                                         title="Salvar hábito"
                                         onPress={() => {
                                             handleSaveHabit();
                                         }}
                                     />
-
                                 </View>
                             </View>
 
@@ -247,7 +245,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 5,
-
+        backgroundColor: colors.blue,
     },
     loadingPageComponentStyle: {
         position: 'absolute',
@@ -287,9 +285,6 @@ const styles = StyleSheet.create({
         paddingTop: 15,
         paddingHorizontal: 18,
         gap: 15,
-    },
-    listaDeHoras: {
-
     },
     itensListaDeHoras: {
         flexDirection: 'row',

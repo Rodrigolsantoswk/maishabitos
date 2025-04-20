@@ -1,21 +1,23 @@
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
 import { PropsWithChildren } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import colors from '@/constants/colors';
 
 type Props = PropsWithChildren<{
   isVisible: boolean;
   onClose: () => void;
   title?: string;
+  TextColor?: string
 }>;
 
-export default function ModalScreen({ isVisible, children, onClose,title="Modal" }: Props) {
+export function ModalScreen({ isVisible, children, onClose,title="Modal" }: Props) {
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <View style={styles.backDrop}>
         <View style={styles.modalContainer}>
           <View style={styles.titleBar}>
             <View style={styles.titleContainer}>
-              <Text>{title}</Text>
+              <Text style={styles.title}>{title}</Text>
             </View>
             <View style={styles.titleButton}>
               <Pressable onPress={onClose}>
@@ -41,18 +43,18 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: 'rgba(0,0,0,0.5)'
+    backgroundColor: colors.overlayPurple
   },
   modalContainer: {
     opacity: 1.0,
-    backgroundColor: '#25292e',
+    backgroundColor: colors.blue,
   },
   modalContent: {
-    backgroundColor: '#25292e',
+    backgroundColor: colors.sky ,
     margin: 12,
   },
   titleBar: {
-    backgroundColor: '#464C55',
+    backgroundColor: colors.blue,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
     paddingHorizontal: 20,
@@ -65,15 +67,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+    color: colors.white,
   },
   titleButton: {
-    backgroundColor: '#f7072f',
+    backgroundColor: colors.red,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
   title: {
-    color: '#fff',
-    fontSize: 16,
+    color: colors.white,
+    fontSize: 19,
   },
 });
