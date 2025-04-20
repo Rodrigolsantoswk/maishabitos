@@ -1,5 +1,4 @@
 import colors from "@/constants/colors";
-import { getDiasDaSemana } from '@/src/services/diasService';
 import { Dia } from '@/src/model/days/days';
 import {
     Text,
