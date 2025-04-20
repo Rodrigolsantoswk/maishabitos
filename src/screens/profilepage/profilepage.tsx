@@ -44,7 +44,7 @@ export function Profile() {
   const [habitToDelete, setHabitToDelete] = useState<Habito | null>(null);
 
   console.log("habitState:", JSON.stringify(habitState, null, 2));
-  
+
   function handleDeleteHabit(habit: RotinasAgrupadas) {
     const user = new User(
       userState.user?.id,
@@ -131,6 +131,14 @@ export function Profile() {
     router.push("/(panel)/profile/createnewhabit/createnewhabitpg");
   };
 
+  const handleEmpty = () => {
+    return <ThemedButton
+      title="Sem rotinas criadas! Clique aqui para criar uma nova rotina"
+      onPress={handleCreateHabit}
+      color={colors.sky}
+    ></ThemedButton>
+  };
+
   const renderHabit = ({ item }: { item: RotinasAgrupadas & { diasDaSemana: string[] } }) => (
     <LinearGradient
       colors={[colors.purple, colors.blue]}
@@ -211,6 +219,7 @@ export function Profile() {
           data={habitosAgrupados}
           keyExtractor={(item) => item.idHabito}
           renderItem={renderHabit}
+          ListEmptyComponent={handleEmpty}
           ListHeaderComponent={
             <View>
               <ContentViewer
@@ -218,14 +227,9 @@ export function Profile() {
                 paddingTop={5}
                 paddingHorizontal={15}
                 gap={2}>
-                <Text style={styles.nome}> Bem vindo! {userState.user?.name}</Text>
+                <Text style={styles.nome}> Aqui estão suas rotinas, {userState.user?.name}</Text>
 
               </ContentViewer>
-              <ThemedButton
-                title="Deslogar"
-                onPress={handleSignout}
-                width="100%"
-                height={48} />
             </View>
           }
           contentContainerStyle={{

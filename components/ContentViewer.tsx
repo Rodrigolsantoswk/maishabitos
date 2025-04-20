@@ -26,8 +26,6 @@ export function ContentViewer({
     flex: 1,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16
   }
 
   return <View style={[styles.base, dynamicStyle]}>

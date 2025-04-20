@@ -30,8 +30,6 @@ export function reducer(
         habitRoutines: [...state.habitRoutines, ...action.payload],
       };
 
-
-
     default:
       return state;
   }

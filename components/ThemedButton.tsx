@@ -11,6 +11,7 @@ interface CustomButtonProps {
   height?: number;
   icon?: string; // Propriedade para passar o ícone
   iconSize?: number; // Tamanho do ícone
+  color?: string; // Cor de fundo opcional
 }
 
 export function ThemedButton({
@@ -21,11 +22,12 @@ export function ThemedButton({
   height = 48,
   icon,
   iconSize = 20,
+  color = colors.purple, 
 }: CustomButtonProps) {
   return (
     <Pressable 
       onPress={onPress} 
-      style={[styles.button, { width, height } as ViewStyle]}
+      style={[styles.button, { width, height, backgroundColor: color } as ViewStyle]}
     >
       <View style={styles.content}>
         {icon && <Icon name={icon} size={iconSize} color={colors.white} style={styles.icon} />}
@@ -39,7 +41,6 @@ export function ThemedButton({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.purple,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,
@@ -57,6 +58,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    marginRight: 8, // Espaçamento entre o ícone e o título
+    marginRight: 8,
   },
 });
