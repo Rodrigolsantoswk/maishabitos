@@ -77,9 +77,9 @@ export function CreateHabit() {
         setHabitSaved(false);
         console.log({ nome, diasSelecionados, horarios });
         try {
-            const nomeRegex = /^[a-zA-ZáàâãäéèêíìîóòôõöúùûçÁÀÂÃÄÉÈÊÍÌÎÓÒÔÕÖÚÙÛ0-9\-\(\)\s]+$/;
+            const nomeRegex = /^[\p{L}\p{N}\-\(\)\s]+$/u;
             if (!nomeRegex.test(nome)) {
-                Alert.alert("Atenção", "Erro ao salvar hábito: Nome do hábito inválido. Apenas texto e números são permitidos, com no máximo 256 caracteres.", [{ text: "OK" }]);
+                Alert.alert("Atenção", "Erro ao salvar hábito: Nome do hábito inválido. Apenas texto, os caracteres '()-' e números são permitidos, com no máximo 256 caracteres.", [{ text: "OK" }]);
                 return;
             }
 

@@ -10,6 +10,7 @@ import DiasProvider, { DiasActionTypes, useDiasContext } from '@/src/state/days'
 import { getDiasDaSemana } from '@/src/services/diasService'
 import HabitRoutineProvider, { HabitoRotinaActionTypes, useContextHabitRoutine } from '@/src/state/habits'
 import { getHabitosPorUsuario } from '@/src/services/habitoRotinaService'
+import { configurarCategoriasDeNotificacoes } from '@/src/notifications/notificationSetup'
 
 export default function RootLayout() {
   return (
@@ -44,8 +45,8 @@ function MainLayout() {
     })
   }
 
-  const carregarHabitos = async (userId: string) => {
-    const resultado = await getHabitosPorUsuario(userId)
+  const carregarHabitos = async (usuario: User) => {
+    const resultado = await getHabitosPorUsuario(usuario)
     if (resultado.success === 0 || !resultado.data) {
       Alert.alert("Problema ao carregar hábitos, contacte o administrador.")
       return
@@ -63,6 +64,7 @@ function MainLayout() {
         if (session) {
           const supabaseUser = session.user
           setAuth(supabaseUser)
+
           try {
             const result = await getUserById(supabaseUser.id)
             if (result.success === 0 || !result.data) {
@@ -72,10 +74,13 @@ function MainLayout() {
 
             const userObj: User = result.data
             userObj.email = session.user.email || ''
-            console.log('email', userObj.email);
+
+            // Notificações
+            await configurarCategoriasDeNotificacoes()
+
             // Populando states
             await carregarDias()
-            await carregarHabitos(userObj.id)
+            await carregarHabitos(userObj)
 
             userDispatch({
               type: UserActionTypes.ADD_USER,
@@ -90,6 +95,7 @@ function MainLayout() {
           } catch (error) {
             console.error('Erro ao buscar ou atualizar usuário:', error)
           }
+
           return
         }
 

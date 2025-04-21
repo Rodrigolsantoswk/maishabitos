@@ -1,21 +1,22 @@
 import colors from "@/constants/colors";
-import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
+import { View, StyleSheet, ActivityIndicator, Text, StatusBar } from "react-native";
 
-export function LoadingPage(){
+export function LoadingPage() {
 
-    return(
+    return (
         <View style={styles.container}>
-           <ActivityIndicator
-            size={44}
-            color={colors.purple}
-           />
-           <Text style={styles.loadingText}>Carregando... Aguarde um pouquinho!!</Text>
+            <StatusBar barStyle="light-content" backgroundColor={colors.sky} />
+            <ActivityIndicator
+                size={44}
+                color={colors.purple}
+            />
+            <Text style={styles.loadingText}>Carregando... Aguarde um pouquinho!!</Text>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         paddingTop: 34,
         backgroundColor: colors.sky,

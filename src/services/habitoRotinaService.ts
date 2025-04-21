@@ -2,6 +2,7 @@ import { supabase } from '@/src/lib/supabase';
 import { HabitoRotina } from '../model/habitRoutine';
 import { Habito } from '../model/habit';
 import { Dia } from '../model/days';
+import { User } from '../model/user';
 
 export async function salvarHabitoRotina(habitos: HabitoRotina[]) {
     try {
@@ -53,7 +54,7 @@ export async function getHabitosComRotinas(userId: string) {
             nome_dia
             )
         `)
-            .eq("habito.user_id", userId)
+            .eq("habito.user_id", userId);
 
 
         if (error) {
@@ -67,9 +68,9 @@ export async function getHabitosComRotinas(userId: string) {
     }
 }
 
-export async function getHabitosPorUsuario(usuarioId: string) {
+export async function getHabitosPorUsuario(usuario: User) {
     try {
-        console.log('getHabitosPorUsuario: ', usuarioId);
+        console.log('getHabitosPorUsuario: ', usuario.id);
 
         const { data, error } = await supabase
             .from('habito_rotina')
@@ -84,7 +85,7 @@ export async function getHabitosPorUsuario(usuarioId: string) {
                   nome_dia
                 )
               `)
-            .eq('habito.user_id', usuarioId);
+            .eq('habito.user_id', usuario.id);
             
         if (error) {
             console.error('Erro na consulta:', error.message);
@@ -92,11 +93,11 @@ export async function getHabitosPorUsuario(usuarioId: string) {
         }
 
         if (!data || data.length === 0) {
-            console.warn('Nenhum dado encontrado para o usuário: ', usuarioId);
+            console.warn('Nenhum dado encontrado para o usuário: ', usuario.id);
         }
         // instanciando os objetos antes de enviar para o _layout
         const habitoRotinas = data.map((item: any) => {
-            const habito = new Habito(item.habito.id, item.habito.nome_do_habito);
+            const habito = new Habito(item.habito.id, item.habito.nome_do_habito, usuario);
             const dia = new Dia(item.dias.nome_dia);
 
             return new HabitoRotina(
