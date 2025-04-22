@@ -1,6 +1,7 @@
 import * as Notifications from "expo-notifications";
 import { getHabitosComRotinas } from "@/src/services/habitoRotinaService";
 import { useContextUser } from "../state/user";
+import { getDiasDaSemana } from "../services/diasService";
 
 // Função para agendar as notificações do usuário
 export async function agendarNotificacoesDoUsuario() {
@@ -18,10 +19,11 @@ export async function agendarNotificacoesDoUsuario() {
         const { id, horario, habito, dia } = rotina;
 
         const [hora, minuto] = horario.split(":").map(Number);
-        const diasDaSemana = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
+        const diasDaSemana = (await getDiasDaSemana()).data ?? [];
         const weekdayIndex = diasDaSemana.indexOf(dia.nome_dia.toLowerCase());
 
         if (weekdayIndex === -1) continue;
+        // to fix: não está chegnado aqui.
         const content = {
             title: `Você fez o hábito "${habito.nome}"?`,
             body: "Toque para responder.",
