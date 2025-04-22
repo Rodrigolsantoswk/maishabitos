@@ -74,14 +74,6 @@ function MainLayout() {
 
             const userObj: User = result.data
             userObj.email = session.user.email || ''
-
-            // Notificações
-            await configurarCategoriasDeNotificacoes()
-
-            // Populando states
-            await carregarDias()
-            await carregarHabitos(userObj)
-
             userDispatch({
               type: UserActionTypes.ADD_USER,
               payload: userObj,
@@ -90,6 +82,12 @@ function MainLayout() {
             if (userObj.isfirstlogin) {
               router.replace('/welcome/_welcomepg')
             } else {
+              // Notificações
+              await configurarCategoriasDeNotificacoes()
+
+              // Populando states
+              await carregarDias()
+              await carregarHabitos(userObj)
               router.replace('/(panel)/profile/profilepg')
             }
           } catch (error) {

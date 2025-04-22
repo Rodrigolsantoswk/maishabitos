@@ -84,29 +84,33 @@ export async function getHabitosPorUsuario(usuario: User) {
                 dias (
                   nome_dia
                 )
-              `)
+            `)
             .eq('habito.user_id', usuario.id);
-            
+
         if (error) {
             console.error('Erro na consulta:', error.message);
             return { success: 0, message: error.message };
         }
 
         if (!data || data.length === 0) {
-            console.warn('Nenhum dado encontrado para o usuário: ', usuario.id);
+            console.warn('Nenhum hábito encontrado para o usuário:', usuario.id);
+            return { success: 1, data: [] }; 
         }
-        // instanciando os objetos antes de enviar para o _layout
-        const habitoRotinas = data.map((item: any) => {
-            const habito = new Habito(item.habito.id, item.habito.nome_do_habito, usuario);
-            const dia = new Dia(item.dias.nome_dia);
 
-            return new HabitoRotina(
-                item.habito_rotina_id,
-                habito,
-                dia,
-                item.horario
-            );
-        });
+        const habitoRotinas = data
+            .filter((item: any) => item.habito && item.dias)
+            .map((item: any) => {
+                const habito = new Habito(item.habito.id, item.habito.nome_do_habito, usuario);
+                const dia = new Dia(item.dias.nome_dia);
+
+                return new HabitoRotina(
+                    item.habito_rotina_id,
+                    habito,
+                    dia,
+                    item.horario
+                );
+            });
+
         return { success: 1, data: habitoRotinas };
 
     } catch (error: any) {
